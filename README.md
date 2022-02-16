@@ -1,4 +1,4 @@
-# Production Testing Algorand Smart Contracts with AlgoPytest
+# Unit Testing Algorand Smart Contracts with AlgoPytest
 
 ## Overview
 
@@ -16,7 +16,7 @@ The smart contract is written in PyTEAL.
 
 ## Getting Started
 
-All code of this tutorial is open-source and available in full on [GitHub](TODO).
+All code of this tutorial is open-source and available in full on [GitHub](https://github.com/DamianB-BitFlipper/algopytest-tutorial).
 
 Firstly, let's start up the Algorand `sandbox` instance and make sure that it is running properly. Instructions for installing the `sandbox` may be found [here](https://github.com/algorand/sandbox#getting-started) . In this tutorial, we will run the test suite on the `release` local testnet. You may adjust this whichever way to suite your needs.
 
@@ -160,7 +160,7 @@ cd tests
 touch conftest.py test_deployment.py
 ```
 
-The structure of this [project](TODO-link-to-github) outlines this directory strcture.
+The structure of this [project](https://github.com/DamianB-BitFlipper/algopytest-tutorial) outlines this directory strcture.
 
 ```bash
 .
