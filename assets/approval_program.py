@@ -31,7 +31,7 @@ def buggy_program():
     )
 
     counter = App.globalGet(var_counter)
-    increment_counter  = Seq([
+    adjust_counter  = Seq([
         Assert(group_checks),
         # Increment the counter if the sender sends the owner more than 10 Algos.
         # Otherwise decrement the counter
@@ -52,7 +52,7 @@ def buggy_program():
         [Txn.on_completion() == OnComplete.UpdateApplication, Return(is_owner)],
         [Txn.on_completion() == OnComplete.OptIn, Return(Int(1))],
         [Txn.on_completion() == OnComplete.CloseOut, Return(Int(1))],
-        [Txn.on_completion() == OnComplete.NoOp, increment_counter],
+        [Txn.on_completion() == OnComplete.NoOp, adjust_counter],
     )
 
     return program

@@ -152,9 +152,12 @@ There is a bug in this smart contract. We will use AlgoPytest to write a test su
 
 There are two components when it comes to writing an AlgoPytest-enabled test suite. The first component is the setup and initialization. The second component are the actual tests themselves.
 
+### Pytest Primer
+
 As this ultimately is a Pytest test suite with AlgoPytest as an installed plugin, we must follow the directory structure expected by Pytest. More details on that [here](https://docs.pytest.org/en/6.2.x/goodpractices.html#choosing-a-test-layout-import-rules). Essentially, all Pytest related code must be found with a `tests` directory in the root of the project. Setup code including the initialization code of AlgoPytest is found within a `conftest.py` file. Test cases are written in files with filenames beginning with `test_`.
 
 ```bash
+cd /root/directory/of/project/
 mkdir tests
 cd tests
 touch conftest.py test_deployment.py
@@ -175,4 +178,31 @@ The structure of this [project](https://github.com/DamianB-BitFlipper/algopytest
     └── test_deployment.py
 ```
 
-### Setting Up AlgoPytest
+### Initializing AlgoPytest
+
+Before any Pytest tests run, you must declare to AlgoPytest the smart contract code to be tested as well as its storage requirements. This is most easily achieved by creating a `conftest.py` file within the `tests` directory and calling `algopytest.initializefrom` within a function named `pytest_configure`. Pytest understands `pytest_configure` and will execute the function before any tests run.
+
+In order to supply AlgoPytest with the smart contract code, it accepts a function which take no arguments and returns a `pyteal.Expr` for each of the approval and clear programs. Refer to the smart contract function `buggy_program` under the [(Buggy) Smart Contract](#like-to-this-section) Section for an example function definition. The storage requirements are simply integers declaring how many global and local integer/byte fields the smart contract requires.
+
+The initialization code of this tutorial calling `initialize` within `pytest_configure` is the following:
+```
+# conftest.py
+from algopytest import initialize
+
+# Load the smart contracts from this project. The path to find these
+# imports is set by the environment variable `$PYTHONPATH`.
+from approval_program import buggy_program
+from clear_program import clear_program
+
+def pytest_configure(config):
+    """Initialize algopytest before the pytest tests run."""
+    initialize(approval_program=buggy_program, 
+               clear_program=clear_program,
+               global_ints=1, global_bytes=1)
+```
+
+### Writing the Tests
+
+Once AlgoPytest has been initialized, it may be used to write the Algorand Smart Contract tests. Most importantly, since AlgoPytest is a Pytest plugin, simply by having it installed, it provides a number of Algorand-specific fixtures in your testing environment. Detailed documentation on fixtures may be found within the Pytest documentation [here](https://docs.pytest.org/en/7.0.x/how-to/fixtures.html). A simplified explanation of fixtures is that they are values which were created by some specified method that are automatically given to Pytest tests by name. The fixtures provided by AlgoPytest are documented in the AlgoPytest documentation [here](https://algopytest.readthedocs.io/en/latest/fixtures.html).
+
+Two AlgoPytest fixtures used commonly in Smart Contract tests are the `owner` and `smart_contract_id`fixtures. The `owner` fixture is an `AlgoUser` Python object representing the test account which created the Smart Contract  
